@@ -6,10 +6,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <CheckBox x:Name="checkbox" Content="ME"/>
+        <CheckBox x:Name="checkbox" Content="Check me"/>
         <TextBlock x:Name="checkedText" Grid.Row="1"/>
-        <TextBlock x:Name="uncheckedText" Grid.Row="2"/>
     </Grid>
 </Window>
