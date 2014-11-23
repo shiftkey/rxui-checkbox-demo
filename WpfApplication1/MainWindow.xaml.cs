@@ -13,25 +13,13 @@ namespace WpfApplication1
 
             // KIDS: DO NOT TRY THIS AT HOME
             var viewmodel = new MainViewModel();
+            viewmodel.SetInitialState(true);
             ViewModel = viewmodel;
 
             this.WhenActivated(d =>
             {
                 this.OneWayBind(ViewModel, vm => vm.CheckedTimeStamp, v => v.checkedText.Text);
-
-                d(Observable.FromEventPattern<RoutedEventHandler, EventArgs>(
-                    x => checkbox.Checked += x,
-                    x => checkbox.Checked -= x)
-                    .Select(x => true)
-                    .SelectMany(x => ViewModel.UpdateTimestampCommand.ExecuteAsync(x))
-                    .Subscribe());
-
-                d(Observable.FromEventPattern<RoutedEventHandler, EventArgs>(
-                    x => checkbox.Unchecked += x,
-                    x => checkbox.Unchecked -= x)
-                    .Select(x => false)
-                    .SelectMany(x => ViewModel.UpdateTimestampCommand.ExecuteAsync(x))
-                    .Subscribe());
+                this.Bind(ViewModel, vm => vm.IsChecked, v => v.checkbox.IsChecked);
             });
 
         }

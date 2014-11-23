@@ -4,7 +4,7 @@ using ReactiveUI;
 
 namespace WpfApplication1
 {
-    public class MainViewModel : ReactiveObject
+    public class MainViewModel : ReactiveObject, IDisposable
     {
         public MainViewModel()
         {
@@ -22,6 +22,16 @@ namespace WpfApplication1
                 return Observable.Return<object>(null);
             });
 
+
+        }
+
+        public void SetInitialState(bool isChecked)
+        {
+            IsChecked = isChecked;
+            _trackChanges = this.WhenAnyValue(vm => vm.IsChecked)
+                .Skip(1)
+                .SelectMany(x => UpdateTimestampCommand.ExecuteAsync(x))
+                .Subscribe();
         }
 
         string _checkedTimeStamp;
@@ -32,5 +42,22 @@ namespace WpfApplication1
         }
 
         public ReactiveCommand<object> UpdateTimestampCommand { get; private set; }
+
+        bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { this.RaiseAndSetIfChanged(ref _isChecked, value); }
+        }
+
+        IDisposable _trackChanges;
+        public void Dispose()
+        {
+            if (_trackChanges != null)
+            {
+                _trackChanges.Dispose();
+                _trackChanges = null;
+            }
+        }
     }
 }
