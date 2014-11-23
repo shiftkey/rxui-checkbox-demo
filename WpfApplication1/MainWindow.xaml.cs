@@ -17,20 +17,21 @@ namespace WpfApplication1
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.CheckedTimeStamp, v => v.checkedText.Text,
-                    time => "Checked at " + time);
-                this.OneWayBind(ViewModel, vm => vm.UncheckedTimeStamp, v => v.uncheckedText.Text,
-                    time => "Unchecked at " + time);
+                this.OneWayBind(ViewModel, vm => vm.CheckedTimeStamp, v => v.checkedText.Text);
 
                 d(Observable.FromEventPattern<RoutedEventHandler, EventArgs>(
                     x => checkbox.Checked += x,
                     x => checkbox.Checked -= x)
-                    .InvokeCommand(ViewModel.CheckedTimeStampCommand));
+                    .Select(x => true)
+                    .SelectMany(x => ViewModel.UpdateTimestampCommand.ExecuteAsync(x))
+                    .Subscribe());
 
                 d(Observable.FromEventPattern<RoutedEventHandler, EventArgs>(
                     x => checkbox.Unchecked += x,
                     x => checkbox.Unchecked -= x)
-                    .InvokeCommand(ViewModel.UncheckedTimeStampCommand));
+                    .Select(x => false)
+                    .SelectMany(x => ViewModel.UpdateTimestampCommand.ExecuteAsync(x))
+                    .Subscribe());
             });
 
         }

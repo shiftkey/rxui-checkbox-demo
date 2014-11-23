@@ -8,17 +8,20 @@ namespace WpfApplication1
     {
         public MainViewModel()
         {
-            CheckedTimeStampCommand = ReactiveCommand.CreateAsyncObservable(o =>
+            UpdateTimestampCommand = ReactiveCommand.CreateAsyncObservable(o =>
             {
-                CheckedTimeStamp = DateTime.Now.ToString();
+                var val = (bool) o;
+                if (val)
+                {
+                    CheckedTimeStamp = "Checked at " + DateTime.Now.ToString();
+                }
+                else
+                {
+                    CheckedTimeStamp = "Unchecked at " + DateTime.Now.ToString();
+                }
                 return Observable.Return<object>(null);
             });
 
-            UncheckedTimeStampCommand = ReactiveCommand.CreateAsyncObservable(o =>
-            {
-                UncheckedTimeStamp = DateTime.Now.ToString();
-                return Observable.Return<object>(null);
-            });
         }
 
         string _checkedTimeStamp;
@@ -28,17 +31,6 @@ namespace WpfApplication1
             private set { this.RaiseAndSetIfChanged(ref _checkedTimeStamp, value); }
         }
 
-        string _uncheckedTimeStamp;
-        public string UncheckedTimeStamp
-        {
-            get { return _uncheckedTimeStamp; }
-            private set { this.RaiseAndSetIfChanged(ref _uncheckedTimeStamp, value); }
-        }
-
-
-
-        public IReactiveCommand<object> CheckedTimeStampCommand { get; private set; }
-
-        public IReactiveCommand<object> UncheckedTimeStampCommand { get; private set; }
+        public ReactiveCommand<object> UpdateTimestampCommand { get; private set; }
     }
 }
